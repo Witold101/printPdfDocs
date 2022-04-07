@@ -5,35 +5,55 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
 import lt.vistar.docs.Customer;
+import lt.vistar.docs.ListTrasa;
 import lt.vistar.docs.PolecenieWyjazdu;
+import lt.vistar.docs.Trasa;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.SimpleTimeZone;
 
 public class RunApp {
+
+    public static BigDecimal FACTOR = new BigDecimal(0.8358);
 
     private static Customer getCustomer (String name, String address){
         return new Customer(name,address);
     }
 
     private static PolecenieWyjazdu getPolecenieWyjazdu(String number,Calendar date, String name, String lastName,
-                                                        String position, Customer customer,
-                                                 Calendar dateBegin, Calendar dateEnd, String carType){
-        return new PolecenieWyjazdu(number, date,name,lastName, position, customer,dateBegin,dateEnd,carType);
+                                                        String position, Customer customer,Calendar dateBegin,
+                                                        Calendar dateEnd, String carType, BigDecimal hotel){
+        return new PolecenieWyjazdu(number, date,name,lastName, position, customer,dateBegin,dateEnd,carType,hotel);
     }
 
     public static void main(String[] args) throws IOException, DocumentException {
-
         Customer customer = getCustomer("PPO PP", "Dworcowa 25,47-100 Strzelce Opolskie");
         PolecenieWyjazdu polecenieWyjazdu = getPolecenieWyjazdu("03",
                         new GregorianCalendar(2022,2,20),
                         "Vitalij", "Vasylius","Dyrektor handlowy", customer,
                         new GregorianCalendar(2022,2,20),
                         new GregorianCalendar(2022,2,21),
-                        "Samochód osobowy prywatny");
+                        "Samochód osobowy prywatny", new BigDecimal(142.04)
+                                                                .setScale(2, RoundingMode.HALF_UP));
+
+        ListTrasa listTrasa = new ListTrasa();
+        listTrasa.buildList(new Trasa("Bydgoszcz",new GregorianCalendar(2022,01,01,
+                14,30),"Wiskitki",new GregorianCalendar(2022,01,01,
+                17,30),235));
+        listTrasa.buildList(new Trasa("Wiskitki",new GregorianCalendar(2022,01,02,
+                8,30),"Łuków",new GregorianCalendar(2022,01,02,
+                10,40),170));
+        listTrasa.buildList(new Trasa("Łuków",new GregorianCalendar(2022,01,02,
+                12,00),"Bydgoszcz",new GregorianCalendar(2022,01,02,
+                16,50),410));
+
         BaseFont baseFont = BaseFont.createFont(BaseFont.TIMES_ROMAN,BaseFont.CP1250, BaseFont.EMBEDDED);
+        Font font6 = new Font(baseFont,6,Font.NORMAL,BaseColor.BLACK);
         Font font8 = new Font(baseFont,8,Font.NORMAL,BaseColor.BLACK);
         Font font10 = new Font(baseFont,10,Font.NORMAL,BaseColor.BLACK);
         Font font12Bold = new Font(baseFont,12,Font.BOLD,BaseColor.BLACK);
@@ -431,6 +451,322 @@ public class RunApp {
         document.add(table2);
         document.add(paragraph4);
 //=============================================================================
+        document.newPage();
+
+        Paragraph title = new Paragraph("RACHUNEK KOSZTÓW PODRÓŻY \n \n",font12Bold);
+        title.setAlignment(Element.ALIGN_CENTER);
+
+        PdfPTable tableBackside = new PdfPTable(8);
+        tableBackside.setWidths(new int[]{10,10,5,10,10,5,12,12});
+
+        PdfPCell cell_1Row_1 = new PdfPCell(new Paragraph("W Y J A Z D", font10));
+        cell_1Row_1.setColspan(3);
+        cell_1Row_1.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_2Row_1 = new PdfPCell(new Paragraph("P R Z Y J A Z D", font10));
+        cell_2Row_1.setColspan(3);
+        cell_2Row_1.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_3Row_1 = new PdfPCell(new Paragraph("Środki lokomacji",font8));
+        cell_3Row_1.setRowspan(2);
+        cell_3Row_1.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_4Row_1 = new PdfPCell(new Paragraph("Koszty przejazdu",font8));
+        cell_4Row_1.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_1Row_2 = new PdfPCell(new Paragraph("miejscowość",font8));
+        cell_1Row_2.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_2Row_2 = new PdfPCell(new Paragraph("data",font8));
+        cell_2Row_2.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_3Row_2 = new PdfPCell(new Paragraph("godz.",font8));
+        cell_3Row_2.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_8Row_2 = new PdfPCell(new Paragraph("zł i gr",font8));
+        cell_8Row_2.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        tableBackside.addCell(cell_1Row_1);
+        tableBackside.addCell(cell_2Row_1);
+        tableBackside.addCell(cell_3Row_1);
+        tableBackside.addCell(cell_4Row_1);
+
+        tableBackside.addCell(cell_1Row_2);
+        tableBackside.addCell(cell_2Row_2);
+        tableBackside.addCell(cell_3Row_2);
+        tableBackside.addCell(cell_1Row_2);
+        tableBackside.addCell(cell_2Row_2);
+        tableBackside.addCell(cell_3Row_2);
+        tableBackside.addCell(cell_8Row_2);
+
+        for (Trasa t: listTrasa.getList()) {
+            PdfPCell cell_1R = new PdfPCell(new Paragraph(t.getCityBegin(),font8));
+            tableBackside.addCell(cell_1R);
+            cell_1R = new PdfPCell(new Paragraph(t.getDateBegin(),font8));
+            tableBackside.addCell(cell_1R);
+            cell_1R = new PdfPCell(new Paragraph(t.getTimeBegin(),font8));
+            tableBackside.addCell(cell_1R);
+            cell_1R = new PdfPCell(new Paragraph(t.getCityEnd(),font8));
+            tableBackside.addCell(cell_1R);
+            cell_1R = new PdfPCell(new Paragraph(t.getDateEnd(),font8));
+            tableBackside.addCell(cell_1R);
+            cell_1R = new PdfPCell(new Paragraph(t.getTimeEnd(),font8));
+            tableBackside.addCell(cell_1R);
+            cell_1R = new PdfPCell(new Paragraph(polecenieWyjazdu.getCarType(),font8));
+            tableBackside.addCell(cell_1R);
+            cell_1R = new PdfPCell(new Paragraph(t.getCost() + "zł / "+t.getKm()
+                    + "km",font8));
+            tableBackside.addCell(cell_1R);
+        }
+
+        PdfPCell cell_1Row_4 = new PdfPCell(new Paragraph("Rachunek sprawdzono pod względem", font8));
+        cell_1Row_4.setRowspan(2);
+        cell_1Row_4.setColspan(4);
+        cell_1Row_4.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_2Row_4 = new PdfPCell(new Paragraph("Ryczałty za dojazdy", font8));
+        cell_2Row_4.setColspan(3);
+        PdfPCell cell_3Row_4 = new PdfPCell(new Paragraph(" ", font8));
+
+        PdfPCell cell_1Row_5 = new PdfPCell(new Paragraph("Dojazdy udokumentowane", font8));
+        cell_1Row_5.setColspan(3);
+        PdfPCell cell_2Row_5 = new PdfPCell(new Paragraph(" ", font8));
+
+        PdfPCell cell_1Row_6 = new PdfPCell(new Paragraph("Merytorycznym", font8));
+        cell_1Row_6.setRowspan(3);
+        cell_1Row_6.setColspan(2);
+        cell_1Row_6.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_2Row_6 = new PdfPCell(new Paragraph("Formalnym i rachunkowym", font8));
+        cell_2Row_6.setRowspan(3);
+        cell_2Row_6.setColspan(2);
+        cell_2Row_6.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_3Row_6 = new PdfPCell(new Paragraph("Razem przejazdy, dojazdy", font8));
+        cell_3Row_6.setColspan(3);
+        PdfPCell cell_4Row_6 = new PdfPCell(new Paragraph(" ", font8));
+
+        PdfPCell cell_1Row_7 = new PdfPCell(new Paragraph("Diety", font8));
+        cell_1Row_7.setColspan(3);
+        PdfPCell cell_2Row_7 = new PdfPCell(new Paragraph(" ", font8));
+
+        PdfPCell cell_1Row_8 = new PdfPCell(new Paragraph("Noclegi wg rachunków", font8));
+        cell_1Row_8.setColspan(3);
+        PdfPCell cell_2Row_8 = new PdfPCell(new Paragraph(polecenieWyjazdu.getHotel()+"zł", font8));
+//------------
+        PdfPCell cell_1Row_9 = new PdfPCell(new Paragraph("data            podpis", font6));
+        cell_1Row_9.setRowspan(3);
+        cell_1Row_9.setColspan(2);
+        cell_1Row_9.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell_1Row_9.setVerticalAlignment(Element.ALIGN_BOTTOM);
+
+        PdfPCell cell_2Row_9 = new PdfPCell(new Paragraph("data            podpis", font6));
+        cell_2Row_9.setRowspan(3);
+        cell_2Row_9.setColspan(2);
+        cell_2Row_9.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell_2Row_9.setVerticalAlignment(Element.ALIGN_BOTTOM);
+
+        PdfPCell cell_3Row_9 = new PdfPCell(new Paragraph("Noclegi - ryczałt", font8));
+        cell_3Row_9.setColspan(3);
+        PdfPCell cell_4Row_9 = new PdfPCell(new Paragraph(" ", font8));
+
+        PdfPCell cell_1Row_10 = new PdfPCell(new Paragraph("Inne wydatki wg załączników", font8));
+        cell_1Row_10.setColspan(3);
+        PdfPCell cell_2Row_10 = new PdfPCell(new Paragraph(" ", font8));
+
+        PdfPCell cell_1Row_11 = new PdfPCell(new Paragraph(" ", font8));
+        cell_1Row_11.setColspan(3);
+        cell_1Row_11.disableBorderSide(Rectangle.BOTTOM);
+        PdfPCell cell_2Row_11 = new PdfPCell(new Paragraph(" ", font8));
+        cell_2Row_11.disableBorderSide(Rectangle.BOTTOM);
+
+        tableBackside.addCell(cell_1Row_4);
+        tableBackside.addCell(cell_2Row_4);
+        tableBackside.addCell(cell_3Row_4);
+        tableBackside.addCell(cell_1Row_5);
+        tableBackside.addCell(cell_2Row_5);
+        tableBackside.addCell(cell_1Row_6);
+        tableBackside.addCell(cell_2Row_6);
+        tableBackside.addCell(cell_3Row_6);
+        tableBackside.addCell(cell_4Row_6);
+        tableBackside.addCell(cell_1Row_7);
+        tableBackside.addCell(cell_2Row_7);
+        tableBackside.addCell(cell_1Row_8);
+        tableBackside.addCell(cell_2Row_8);
+        tableBackside.addCell(cell_1Row_9);
+        tableBackside.addCell(cell_2Row_9);
+        tableBackside.addCell(cell_3Row_9);
+        tableBackside.addCell(cell_4Row_9);
+        tableBackside.addCell(cell_1Row_10);
+        tableBackside.addCell(cell_2Row_10);
+        tableBackside.addCell(cell_1Row_11);
+        tableBackside.addCell(cell_2Row_11);
+
+        PdfPCell cell_1Row_12 = new PdfPCell(new Paragraph("Zatwierdzono na zł ", font8));
+        cell_1Row_12.setColspan(4);
+        cell_1Row_12.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell_1Row_12.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_2Row_12 = new PdfPCell(new Paragraph("Ogółem ", font8));
+        cell_2Row_12.setColspan(3);
+        cell_2Row_12.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell_2Row_12.disableBorderSide(Rectangle.TOP);
+        cell_2Row_12.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_3Row_12 = new PdfPCell(new Paragraph(listTrasa.getCost().add(polecenieWyjazdu.getHotel())
+                .toString(), font8));
+        cell_3Row_12.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell_3Row_12.disableBorderSide(Rectangle.TOP);
+        cell_3Row_12.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_1Row_13 = new PdfPCell(new Paragraph("słownie", font8));
+        cell_1Row_13.setColspan(4);
+        cell_1Row_13.disableBorderSide(Rectangle.BOTTOM);
+        cell_1Row_13.disableBorderSide(Rectangle.TOP);
+
+        PdfPCell cell_2Row_13 = new PdfPCell(new Paragraph("Słownie złotych:", font8));
+        cell_2Row_13.setColspan(3);
+        cell_2Row_13.disableBorderSide(Rectangle.TOP);
+        cell_2Row_13.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_3Row_13 = new PdfPCell(new Paragraph(" ", font8));
+        cell_3Row_13.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell_3Row_13.disableBorderSide(Rectangle.TOP);
+        cell_3Row_13.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_1Row_14 = new PdfPCell(new Paragraph(" ", font8));
+        cell_1Row_14.setColspan(4);
+        cell_1Row_14.disableBorderSide(Rectangle.BOTTOM);
+        cell_1Row_14.disableBorderSide(Rectangle.TOP);
+
+        PdfPCell cell_2Row_14 = new PdfPCell(new Paragraph(" ", font8));
+        cell_2Row_14.setColspan(3);
+        cell_2Row_14.disableBorderSide(Rectangle.TOP);
+        cell_2Row_14.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_3Row_14 = new PdfPCell(new Paragraph(" ", font8));
+        cell_3Row_14.disableBorderSide(Rectangle.TOP);
+        cell_3Row_14.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_1Row_15 = new PdfPCell(new Paragraph(" ", font8));
+        cell_1Row_15.setColspan(4);
+        cell_1Row_15.disableBorderSide(Rectangle.BOTTOM);
+        cell_1Row_15.disableBorderSide(Rectangle.TOP);
+        cell_1Row_15.setMinimumHeight(50f);
+
+        PdfPCell cell_2Row_15 = new PdfPCell(new Paragraph(" ", font8));
+        cell_2Row_15.setColspan(3);
+        cell_2Row_15.disableBorderSide(Rectangle.TOP);
+        cell_2Row_15.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_3Row_15 = new PdfPCell(new Paragraph(" ", font8));
+        cell_3Row_15.disableBorderSide(Rectangle.TOP);
+        cell_3Row_15.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_1Row_16 = new PdfPCell(new Paragraph("data                             podpisy zatwierdzających", font6));
+        cell_1Row_16.setColspan(4);
+        cell_1Row_16.disableBorderSide(Rectangle.BOTTOM);
+        cell_1Row_16.disableBorderSide(Rectangle.TOP);
+        cell_1Row_16.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_2Row_16 = new PdfPCell(new Paragraph(" ", font8));
+        cell_2Row_16.setColspan(3);
+        cell_2Row_16.disableBorderSide(Rectangle.TOP);
+
+        PdfPCell cell_3Row_16 = new PdfPCell(new Paragraph(" ", font8));
+        cell_3Row_16.disableBorderSide(Rectangle.TOP);
+//--
+        PdfPCell cell_1Row_17 = new PdfPCell(new Paragraph("Kwituję odbiór zł - "+
+                listTrasa.getCost().add(polecenieWyjazdu.getHotel())+" zł - przelew", font8));
+        cell_1Row_17.setColspan(4);
+        cell_1Row_17.disableBorderSide(Rectangle.BOTTOM);
+        cell_1Row_17.disableBorderSide(Rectangle.TOP);
+
+        PdfPCell cell_2Row_17 = new PdfPCell(new Paragraph("Załączam", font8));
+        cell_2Row_17.disableBorderSide(Rectangle.BOTTOM);
+
+        PdfPCell cell_3Row_17 = new PdfPCell(new Paragraph("Pobrano zaliczkę", font8));
+        cell_3Row_17.setColspan(2);
+
+        PdfPCell cell_4Row_17 = new PdfPCell(new Paragraph("-------", font8));
+
+        PdfPCell cell_1Row_18 = new PdfPCell(new Paragraph("Słownie zł: ", font8));
+        cell_1Row_18.setColspan(4);
+        cell_1Row_18.disableBorderSide(Rectangle.BOTTOM);
+        cell_1Row_18.disableBorderSide(Rectangle.TOP);
+
+        PdfPCell cell_2Row_18 = new PdfPCell(new Paragraph("dowodów", font6));
+        cell_2Row_18.disableBorderSide(Rectangle.TOP);
+        cell_2Row_18.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell_3Row_18 = new PdfPCell(new Paragraph("Do wypłaty", font8));
+        cell_3Row_18.setColspan(2);
+
+        PdfPCell cell_4Row_18 = new PdfPCell(new Paragraph(listTrasa.getCost().add(polecenieWyjazdu.getHotel())
+                +"zł" , font8));
+
+        PdfPCell cell_1Row_19 = new PdfPCell(new Paragraph(" ", font8));
+        cell_1Row_19.setColspan(4);
+        cell_1Row_19.disableBorderSide(Rectangle.BOTTOM);
+        cell_1Row_19.disableBorderSide(Rectangle.TOP);
+
+        PdfPCell cell_2Row_19 = new PdfPCell(new Paragraph("Ninejszy rachunek przedkładam", font8));
+        cell_2Row_19.disableBorderSide(Rectangle.BOTTOM);
+        cell_2Row_19.setColspan(4);
+
+        PdfPCell cell_1Row_20 = new PdfPCell(new Paragraph("data                                      podpis", font6));
+        cell_1Row_20.setColspan(4);
+        cell_1Row_20.setMinimumHeight(35f);
+        cell_1Row_20.setVerticalAlignment(Element.ALIGN_BOTTOM);
+        cell_1Row_20.disableBorderSide(Rectangle.TOP);
+        cell_1Row_20.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+
+        PdfPCell cell_2Row_20 = new PdfPCell(new Paragraph("data                                      podpis", font6));
+        cell_2Row_20.disableBorderSide(Rectangle.TOP);
+        cell_2Row_20.setColspan(4);
+        cell_2Row_20.setVerticalAlignment(Element.ALIGN_BOTTOM);
+        cell_2Row_20.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+
+        //PdfPCell cell_4Row_9 = new PdfPCell(new Paragraph(" ", font8));
+
+        tableBackside.addCell(cell_1Row_12);
+        tableBackside.addCell(cell_2Row_12);
+        tableBackside.addCell(cell_3Row_12);
+        tableBackside.addCell(cell_1Row_13);
+        tableBackside.addCell(cell_2Row_13);
+        tableBackside.addCell(cell_3Row_13);
+        tableBackside.addCell(cell_1Row_14);
+        tableBackside.addCell(cell_2Row_14);
+        tableBackside.addCell(cell_3Row_14);
+        tableBackside.addCell(cell_1Row_15);
+        tableBackside.addCell(cell_2Row_15);
+        tableBackside.addCell(cell_3Row_15);
+        tableBackside.addCell(cell_1Row_16);
+        tableBackside.addCell(cell_2Row_16);
+        tableBackside.addCell(cell_3Row_16);
+        tableBackside.addCell(cell_1Row_17);
+        tableBackside.addCell(cell_2Row_17);
+        tableBackside.addCell(cell_3Row_17);
+        tableBackside.addCell(cell_4Row_17);
+        tableBackside.addCell(cell_1Row_18);
+        tableBackside.addCell(cell_2Row_18);
+        tableBackside.addCell(cell_3Row_18);
+        tableBackside.addCell(cell_4Row_18);
+        tableBackside.addCell(cell_1Row_19);
+        tableBackside.addCell(cell_2Row_19);
+        tableBackside.addCell(cell_1Row_20);
+        tableBackside.addCell(cell_2Row_20);
+
+
+
+        document.add(title);
+        document.add(tableBackside);
+
+//=============================================================================
+
+
         document.close();
     }
 }

@@ -1,6 +1,9 @@
 package lt.vistar.docs;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class PolecenieWyjazdu {
     private String number;
@@ -12,9 +15,10 @@ public class PolecenieWyjazdu {
     private Calendar dateBegin;
     private Calendar dateEnd;
     private String carType;
+    private BigDecimal hotel;
 
     public PolecenieWyjazdu(String number, Calendar date, String name, String lastName, String position,
-                            Customer customer, Calendar dateBegin, Calendar dateEnd, String carType) {
+                            Customer customer, Calendar dateBegin, Calendar dateEnd, String carType, BigDecimal hotel) {
         this.number = number;
         this.date = date;
         this.name = name;
@@ -24,6 +28,7 @@ public class PolecenieWyjazdu {
         this.dateBegin = dateBegin;
         this.dateEnd = dateEnd;
         this.carType = carType;
+        this.hotel = hotel;
     }
 
     public String getPosition() {
@@ -96,5 +101,13 @@ public class PolecenieWyjazdu {
 
     public void setCarType(String carType) {
         this.carType = carType;
+    }
+
+    public BigDecimal getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(BigDecimal hotel) {
+        this.hotel = hotel;
     }
 }
