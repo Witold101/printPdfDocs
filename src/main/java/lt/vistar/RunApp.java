@@ -27,20 +27,13 @@ public class RunApp {
 
     private static PolecenieWyjazdu getPolecenieWyjazdu(String number,Calendar date, String name, String lastName,
                                                         String position, Customer customer,Calendar dateBegin,
-                                                        Calendar dateEnd, String carType, BigDecimal hotel){
-        return new PolecenieWyjazdu(number, date,name,lastName, position, customer,dateBegin,dateEnd,carType,hotel);
+                                                        Calendar dateEnd, String carType, BigDecimal hotel
+                                                        , ListTrasa listTrasa){
+        return new PolecenieWyjazdu(number, date,name,lastName, position, customer,dateBegin,dateEnd,carType
+                ,hotel,listTrasa);
     }
 
     public static void main(String[] args) throws IOException, DocumentException {
-        Customer customer = getCustomer("PPO PP", "Dworcowa 25,47-100 Strzelce Opolskie");
-        PolecenieWyjazdu polecenieWyjazdu = getPolecenieWyjazdu("03",
-                        new GregorianCalendar(2022,2,20),
-                        "Vitalij", "Vasylius","Dyrektor handlowy", customer,
-                        new GregorianCalendar(2022,2,20),
-                        new GregorianCalendar(2022,2,21),
-                        "Samochód osobowy prywatny", new BigDecimal(142.04)
-                                                                .setScale(2, RoundingMode.HALF_UP));
-
         ListTrasa listTrasa = new ListTrasa();
         listTrasa.buildList(new Trasa("Bydgoszcz",new GregorianCalendar(2022,01,01,
                 14,30),"Wiskitki",new GregorianCalendar(2022,01,01,
@@ -51,6 +44,16 @@ public class RunApp {
         listTrasa.buildList(new Trasa("Łuków",new GregorianCalendar(2022,01,02,
                 12,00),"Bydgoszcz",new GregorianCalendar(2022,01,02,
                 16,50),410));
+        Customer customer = getCustomer("PPO PP", "Dworcowa 25,47-100 Strzelce Opolskie");
+        PolecenieWyjazdu polecenieWyjazdu = getPolecenieWyjazdu("03",
+                        new GregorianCalendar(2022,2,20),
+                        "Vitalij", "Vasylius","Dyrektor handlowy", customer,
+                        new GregorianCalendar(2022,2,20),
+                        new GregorianCalendar(2022,2,21),
+                        "Samochód osobowy prywatny", new BigDecimal(142.04)
+                                                                .setScale(2, RoundingMode.HALF_UP),
+                    listTrasa);
+
 
         BaseFont baseFont = BaseFont.createFont(BaseFont.TIMES_ROMAN,BaseFont.CP1250, BaseFont.EMBEDDED);
         Font font6 = new Font(baseFont,6,Font.NORMAL,BaseColor.BLACK);
@@ -499,7 +502,7 @@ public class RunApp {
         tableBackside.addCell(cell_3Row_2);
         tableBackside.addCell(cell_8Row_2);
 
-        for (Trasa t: listTrasa.getList()) {
+        for (Trasa t: polecenieWyjazdu.getListTrasa().getList()) {
             PdfPCell cell_1R = new PdfPCell(new Paragraph(t.getCityBegin(),font8));
             tableBackside.addCell(cell_1R);
             cell_1R = new PdfPCell(new Paragraph(t.getDateBegin(),font8));

@@ -17,10 +17,6 @@ public class ListTrasa {
         return list;
     }
 
-    public void setList(List<Trasa> list) {
-        this.list = list;
-    }
-
     public void buildList(Trasa trasa){
         this.cost = cost.add(trasa.getCost());
         list.add(trasa);
