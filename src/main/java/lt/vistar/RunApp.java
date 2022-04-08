@@ -4,10 +4,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
-import lt.vistar.docs.Customer;
-import lt.vistar.docs.ListTrasa;
-import lt.vistar.docs.PolecenieWyjazdu;
-import lt.vistar.docs.Trasa;
+import lt.vistar.docs.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -616,8 +613,12 @@ public class RunApp {
         cell_2Row_12.disableBorderSide(Rectangle.TOP);
         cell_2Row_12.disableBorderSide(Rectangle.BOTTOM);
 
-        PdfPCell cell_3Row_12 = new PdfPCell(new Paragraph(listTrasa.getCost().add(polecenieWyjazdu.getHotel())
-                .toString(), font8));
+        String peopleArray = listTrasa.getCost().add(polecenieWyjazdu.getHotel())
+                .toString();
+        int beginStr = Integer.parseInt(peopleArray.substring(0,peopleArray.indexOf(".")));
+        String endStr = peopleArray.substring(peopleArray.indexOf(".")+1)+"/100";
+
+        PdfPCell cell_3Row_12 = new PdfPCell(new Paragraph( peopleArray, font8));
         cell_3Row_12.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell_3Row_12.disableBorderSide(Rectangle.TOP);
         cell_3Row_12.disableBorderSide(Rectangle.BOTTOM);
@@ -637,12 +638,12 @@ public class RunApp {
         cell_3Row_13.disableBorderSide(Rectangle.TOP);
         cell_3Row_13.disableBorderSide(Rectangle.BOTTOM);
 
-        PdfPCell cell_1Row_14 = new PdfPCell(new Paragraph(" ", font8));
+        PdfPCell cell_1Row_14 = new PdfPCell(new Paragraph(new LiczbaNaSlowa(beginStr).getRezult()+" "+endStr, font8));
         cell_1Row_14.setColspan(4);
         cell_1Row_14.disableBorderSide(Rectangle.BOTTOM);
         cell_1Row_14.disableBorderSide(Rectangle.TOP);
 
-        PdfPCell cell_2Row_14 = new PdfPCell(new Paragraph(" ", font8));
+        PdfPCell cell_2Row_14 = new PdfPCell(new Paragraph(new LiczbaNaSlowa(beginStr).getRezult()+" "+endStr, font8));
         cell_2Row_14.setColspan(3);
         cell_2Row_14.disableBorderSide(Rectangle.TOP);
         cell_2Row_14.disableBorderSide(Rectangle.BOTTOM);
@@ -708,7 +709,7 @@ public class RunApp {
         PdfPCell cell_4Row_18 = new PdfPCell(new Paragraph(listTrasa.getCost().add(polecenieWyjazdu.getHotel())
                 +"zł" , font8));
 
-        PdfPCell cell_1Row_19 = new PdfPCell(new Paragraph(" ", font8));
+        PdfPCell cell_1Row_19 = new PdfPCell(new Paragraph(new LiczbaNaSlowa(beginStr).getRezult()+" "+endStr, font8));
         cell_1Row_19.setColspan(4);
         cell_1Row_19.disableBorderSide(Rectangle.BOTTOM);
         cell_1Row_19.disableBorderSide(Rectangle.TOP);
@@ -731,8 +732,6 @@ public class RunApp {
         cell_2Row_20.setVerticalAlignment(Element.ALIGN_BOTTOM);
         cell_2Row_20.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-
-        //PdfPCell cell_4Row_9 = new PdfPCell(new Paragraph(" ", font8));
 
         tableBackside.addCell(cell_1Row_12);
         tableBackside.addCell(cell_2Row_12);
@@ -761,7 +760,6 @@ public class RunApp {
         tableBackside.addCell(cell_2Row_19);
         tableBackside.addCell(cell_1Row_20);
         tableBackside.addCell(cell_2Row_20);
-
 
 
         document.add(title);
