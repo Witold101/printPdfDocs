@@ -46,7 +46,7 @@ public class PDFpw {
         table.addCell(cell1);
         table.addCell(cell2);
 //---------------------
-        cell1 = new PdfPCell(new Paragraph("POLECENIE WYJAZDU SŁUŻBOWEGO Nr " + pw.getCarType(),
+        cell1 = new PdfPCell(new Paragraph("POLECENIE WYJAZDU SŁUŻBOWEGO Nr " + pw.getNumber(),
                 font12Bold));
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell1.setFixedHeight(45f);
@@ -58,9 +58,7 @@ public class PDFpw {
         table.addCell(cell1);
         table.addCell(cell2);
 //---------------------
-        cell1 = new PdfPCell(new Paragraph("z dnia " + pw.getDate().get(Calendar.DATE)
-                + "/" + pw.getDate().get(Calendar.MONTH) + "/" +
-                pw.getDate().get(Calendar.YEAR), font10));
+        cell1 = new PdfPCell(new Paragraph("z dnia " + pw.getDate(), font10));
         cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell1.setFixedHeight(45f);
         cell1.disableBorderSide(Rectangle.BOTTOM);
@@ -154,9 +152,7 @@ public class PDFpw {
         table.addCell(cell1);
         table.addCell(cell2);
 //-------------------------
-        cell1 = new PdfPCell(new Paragraph(pw.getDateBegin().get(Calendar.DATE)
-                + "/" + pw.getDateBegin().get(Calendar.MONTH) + "/" +
-                pw.getDateBegin().get(Calendar.YEAR), font10));
+        cell1 = new PdfPCell(new Paragraph(pw.getDateBegin(), font10));
         cell1.disableBorderSide(Rectangle.BOTTOM);
         cell1.disableBorderSide(Rectangle.TOP);
         cell2 = new PdfPCell(new Paragraph(""));
@@ -183,9 +179,7 @@ public class PDFpw {
         table.addCell(cell1);
         table.addCell(cell2);
 //-------------------------
-        cell1 = new PdfPCell(new Paragraph(pw.getDateEnd().get(Calendar.DATE)
-                + "/" + pw.getDateEnd().get(Calendar.MONTH) + "/" +
-                pw.getDateEnd().get(Calendar.YEAR), font10));
+        cell1 = new PdfPCell(new Paragraph(pw.getDateEnd(), font10));
         cell1.disableBorderSide(Rectangle.BOTTOM);
         cell1.disableBorderSide(Rectangle.TOP);
         cell2 = new PdfPCell(new Paragraph(""));
@@ -212,7 +206,7 @@ public class PDFpw {
         table.addCell(cell1);
         table.addCell(cell2);
 //-------------------------
-        cell1 = new PdfPCell(new Paragraph("W sprawie dostaw materiałów na buty", font10));
+        cell1 = new PdfPCell(new Paragraph(pw.getTarget(), font10));
         cell1.disableBorderSide(Rectangle.BOTTOM);
         cell1.disableBorderSide(Rectangle.TOP);
         cell2 = new PdfPCell(new Paragraph(""));
@@ -264,8 +258,7 @@ public class PDFpw {
         table.addCell(cell1);
         table.addCell(cell2);
 //----------------------------------------------------------
-        cell1 = new PdfPCell(new Paragraph("   " + pw.getDate().get(Calendar.DATE) + "/" +
-                pw.getDate().get(Calendar.MONTH) + "/" + pw.getDate().get(Calendar.YEAR) +
+        cell1 = new PdfPCell(new Paragraph("   " + pw.getDate() +
                 "        " + "__________________", font10));
         cell1.disableBorderSide(Rectangle.TOP);
         cell1.disableBorderSide(Rectangle.BOTTOM);
@@ -318,7 +311,7 @@ public class PDFpw {
         paragraph3.add(new Chunk("Zatwierdzono na zł ..................... słownie zł ............................." +
                 "..............................................................\n"
                 , font10));
-        paragraph3.add(new Chunk("do wypłaty z sum .............................. \n \n \n", font10));
+        paragraph3.add(new Chunk("do wypłaty z sum .............................. \n \n", font10));
         //-----------------------------------------------------------------------------
         PdfPTable table2 = new PdfPTable(2);
         PdfPTable table2_1 = new PdfPTable(5);

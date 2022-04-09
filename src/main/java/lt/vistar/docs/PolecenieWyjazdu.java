@@ -1,35 +1,39 @@
 package lt.vistar.docs;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class PolecenieWyjazdu {
     private String number;
-    private Calendar date;
+    private String date;
     private String name;
     private String lastName;
     private String position;
     private Customer customer;
-    private Calendar dateBegin;
-    private Calendar dateEnd;
+    private String dateBegin;
+    private String dateEnd;
     private String carType;
+    private String target;
     private BigDecimal hotel;
     private ListTrasa listTrasa;
 
     public PolecenieWyjazdu(String number, Calendar date, String name, String lastName, String position,
-                            Customer customer, Calendar dateBegin, Calendar dateEnd, String carType, BigDecimal hotel
-                            , ListTrasa listTrasa) {
+                            Customer customer, Calendar dateBegin, Calendar dateEnd, String carType,String target,
+                            BigDecimal hotel, ListTrasa listTrasa) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         this.number = number;
-        this.date = date;
+        this.date = dateFormat.format(date.getTime());
         this.name = name;
         this.lastName = lastName;
         this.position = position;
         this.customer = customer;
-        this.dateBegin = dateBegin;
-        this.dateEnd = dateEnd;
+        this.dateBegin = dateFormat.format(dateBegin.getTime());
+        this.dateEnd = dateFormat.format(dateEnd.getTime());
         this.carType = carType;
+        this.target = target;
         this.hotel = hotel;
         this.listTrasa = listTrasa;
     }
@@ -42,7 +46,7 @@ public class PolecenieWyjazdu {
         return number;
     }
 
-    public Calendar getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -58,11 +62,11 @@ public class PolecenieWyjazdu {
         return customer;
     }
 
-    public Calendar getDateBegin() {
+    public String getDateBegin() {
         return dateBegin;
     }
 
-    public Calendar getDateEnd() {
+    public String getDateEnd() {
         return dateEnd;
     }
 
@@ -76,5 +80,9 @@ public class PolecenieWyjazdu {
 
     public ListTrasa getListTrasa(){
         return listTrasa;
+    }
+
+    public String getTarget() {
+        return target;
     }
 }
