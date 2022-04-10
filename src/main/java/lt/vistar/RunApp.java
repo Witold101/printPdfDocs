@@ -2,6 +2,7 @@ package lt.vistar;
 
 import com.itextpdf.text.*;
 import lt.vistar.docs.*;
+import lt.vistar.ewidencja.PDFepp;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -48,5 +49,6 @@ public class RunApp {
                 new BigDecimal(0.0).setScale(2, RoundingMode.HALF_UP), listTrasa);
 
         new PDFpw(polecenieWyjazdu);
+        new PDFepp();
     }
 }
