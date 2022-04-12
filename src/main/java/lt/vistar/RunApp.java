@@ -19,9 +19,13 @@ public class RunApp {
 
     public static void main(String[] args) throws IOException, DocumentException {
         //------------------------------------
-        String TARGET = "Do biura i ksęgową";
-        Car car = new Car("Samochód osobowy prywatny","Subaru Forester",
-                "81-08PX-7","2498 cm3");
+        String TARGET =
+                "Do biura i ksęgową";
+        Car car = new Car(
+                "Samochód osobowy prywatny",
+                "Subaru Forester",
+                "81-08PX-7",
+                "2498 cm3");
 
         //     String TARGET = "W sprawie dostaw materiałów na buty";
    //     String TARGET = "Rozmowy o warunkach sprzedaży";
@@ -45,12 +49,21 @@ public class RunApp {
 //        listTrasa.buildList(new Trasa("Łuków", new GregorianCalendar(2022, Calendar.FEBRUARY, 02,
 //                12, 00), "Bydgoszcz", new GregorianCalendar(2022, Calendar.FEBRUARY, 02,
 //                16, 50), 410));
-        Customer customer = new Customer("SPOŁEM PSS", "Pl.Konstytucji 3-go Maja 8,26-670 Pionki");
-        PolecenieWyjazdu polecenieWyjazdu = new PolecenieWyjazdu("04",
+        Customer customer = new Customer(
+                "SPOŁEM PSS",
+                "Pl.Konstytucji 3-go Maja 8," +
+                        "26-670 Pionki"
+        );
+        PolecenieWyjazdu polecenieWyjazdu = new PolecenieWyjazdu(
+                "04",
                 new GregorianCalendar(2022, Calendar.MARCH, 15),
-                "Vitalij", "Vasylius", "Dyrektor handlowy", customer,
-                new GregorianCalendar(2022, Calendar.MARCH, 15),
-                new GregorianCalendar(2022, Calendar.MARCH, 16),
+                "Vitalij",
+                "Vasylius",
+                "Dyrektor handlowy", customer,
+                new GregorianCalendar(
+                        2022, Calendar.MARCH, 15),
+                new GregorianCalendar(
+                        2022, Calendar.MARCH, 16),
                 car.getType()+" "+car.getBrand()+" "+car.getNumber(),TARGET,
                 new BigDecimal(0.0).setScale(2, RoundingMode.HALF_UP), listTrasa);
 
@@ -61,7 +74,6 @@ public class RunApp {
         String month = "Marzec";
         String rock = "2022";
         List<PolecenieWyjazdu> list = new ArrayList<>();
-        list.add(polecenieWyjazdu);
         list.add(polecenieWyjazdu);
         //-------------------------------------------------------------------------------------
 
