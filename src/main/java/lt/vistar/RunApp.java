@@ -2,13 +2,16 @@ package lt.vistar;
 
 import com.itextpdf.text.*;
 import lt.vistar.docs.*;
+import lt.vistar.ewidencja.Car;
 import lt.vistar.ewidencja.PDFepp;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class RunApp {
 
@@ -17,7 +20,10 @@ public class RunApp {
     public static void main(String[] args) throws IOException, DocumentException {
         //------------------------------------
         String TARGET = "Do biura i ksęgową";
-   //     String TARGET = "W sprawie dostaw materiałów na buty";
+        Car car = new Car("Samochód osobowy prywatny","Subaru Forester",
+                "81-08PX-7","2498 cm3");
+
+        //     String TARGET = "W sprawie dostaw materiałów na buty";
    //     String TARGET = "Rozmowy o warunkach sprzedaży";
    //     String TARGET = "";
 
@@ -45,10 +51,22 @@ public class RunApp {
                 "Vitalij", "Vasylius", "Dyrektor handlowy", customer,
                 new GregorianCalendar(2022, Calendar.MARCH, 15),
                 new GregorianCalendar(2022, Calendar.MARCH, 16),
-                "Samochód osobowy prywatny Subaru Forester 81-08PX-7",TARGET,
+                car.getType()+" "+car.getBrand()+" "+car.getNumber(),TARGET,
                 new BigDecimal(0.0).setScale(2, RoundingMode.HALF_UP), listTrasa);
 
+
+        //-------------------------------------------------------------------------------------
+        String name = "Vitalij Vasylius";
+        String address = "ul.Jana Pestalozziego 2/32,\n 85-095, Bydgoszcz";
+        String month = "Marzec";
+        String rock = "2022";
+        List<PolecenieWyjazdu> list = new ArrayList<>();
+        list.add(polecenieWyjazdu);
+        list.add(polecenieWyjazdu);
+        //-------------------------------------------------------------------------------------
+
         new PDFpw(polecenieWyjazdu);
-        new PDFepp();
+        new PDFepp(name,address,month,rock,car,list);
+
     }
 }
