@@ -284,7 +284,7 @@ public class PDFpw {
         table.addCell(cell2);
         //-----------------------------------------------------------------------------
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream("d:/iTextHelloWorld.pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream("d:/PW.pdf"));
         document.open();
 
         Paragraph paragraph1 = new Paragraph();
